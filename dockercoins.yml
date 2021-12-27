@@ -1,0 +1,191 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  labels:
+    name: dev
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: webui
+  labels:
+    app: dockercoins
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockercoins
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: dockercoins
+        tier: frontend
+    spec:
+      containers:
+        - name: webui
+          image: benjamaasoufiene/webui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: webui
+  labels:
+    app: dockercoins
+    tier: frontend
+spec:
+  selector:
+    app: dockercoins
+    tier: frontend
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:  
+  namespace: dev
+  name: redis
+  labels:
+    app: dockercoins
+    tier: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockercoins
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: dockercoins
+        tier: db
+    spec:
+      containers:
+        - name: redis
+          image: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: redis
+spec:
+  selector:
+    app: dockercoins
+    tier: db
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 6379
+      targetPort: 6379
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: worker
+  labels:
+    app: dockercoins
+    tier: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockercoins
+      tier: worker
+  template:
+    metadata:
+      labels:
+        app: dockercoins
+        tier: worker  
+    spec:
+      containers:
+        - name: worker
+          image: benjamaasoufiene/worker
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: rng
+  labels:
+    app: dockercoins
+    tier: rng
+spec:
+  replicas: 1
+  selector:
+     matchLabels:
+       app: dockercoins
+       tier: rng
+  template:
+    metadata:
+      labels:
+        app: dockercoins
+        tier: rng
+        environment: worker
+    spec:
+      containers:
+        - name: rng
+          image: benjamaasoufiene/rng
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: rng
+spec:
+  selector:
+    app: dockercoins
+    tier: rng
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: dev
+  name: hasher
+  labels:
+    app: dockercoins
+    tier: hasher
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dockercoins
+      tier: hasher
+  template:
+    metadata:
+      labels:
+        app: dockercoins
+        tier: hasher  
+    spec:
+      containers:
+        - name: hasher
+          image: benjamaasoufiene/hasher
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: dev
+  name: hasher
+spec:
+  selector:
+    app: dockercoins
+    tier: hasher
+  type: ClusterIP
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
