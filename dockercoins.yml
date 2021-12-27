@@ -130,7 +130,6 @@ spec:
       labels:
         app: dockercoins
         tier: rng
-        environment: worker
     spec:
       containers:
         - name: rng
