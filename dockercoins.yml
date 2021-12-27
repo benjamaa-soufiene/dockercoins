@@ -1,14 +1,6 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: dev
-  labels:
-    name: dev
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: dev
   name: webui
   labels:
     app: dockercoins
@@ -32,7 +24,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: dev
   name: webui
   labels:
     app: dockercoins
@@ -51,7 +42,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:  
-  namespace: dev
   name: redis
   labels:
     app: dockercoins
@@ -75,7 +65,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: dev
   name: redis
 spec:
   selector:
@@ -90,7 +79,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: dev
   name: worker
   labels:
     app: dockercoins
@@ -114,7 +102,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: dev
   name: rng
   labels:
     app: dockercoins
@@ -138,7 +125,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: dev
   name: rng
 spec:
   selector:
@@ -153,7 +139,6 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: dev
   name: hasher
   labels:
     app: dockercoins
@@ -177,7 +162,6 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: dev
   name: hasher
 spec:
   selector:
